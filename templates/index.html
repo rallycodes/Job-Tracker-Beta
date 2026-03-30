@@ -1,0 +1,2485 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JobTrack</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap");
+
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg: #080808;
+        --s1: #111;
+        --s2: #1a1a1a;
+        --s3: #222;
+        --b1: #1f1f1f;
+        --b2: #2a2a2a;
+        --t1: #f0f0f0;
+        --t2: #888;
+        --t3: #555;
+        --green: #22c55e;
+        --gd: rgba(34, 197, 94, 0.12);
+        --yellow: #eab308;
+        --yd: rgba(234, 179, 8, 0.12);
+        --blue: #3b82f6;
+        --bd: rgba(59, 130, 246, 0.12);
+        --red: #ef4444;
+        --rd: rgba(239, 68, 68, 0.12);
+        --purple: #a855f7;
+        --pd: rgba(168, 85, 247, 0.12);
+        --orange: #f97316;
+        --od: rgba(249, 115, 22, 0.12);
+        --r: 8px;
+        --rl: 12px;
+        --sw: 260px;
+      }
+
+      @media (max-width: 768px) {
+        :root {
+          --sw: 280px;
+        }
+      }
+
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+        color: var(--t1);
+        font-family: "Geist", system-ui, sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .app {
+        display: grid;
+        grid-template-columns: var(--sw) 1fr;
+        height: 100vh;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      @media (max-width: 768px) {
+        .app {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Sidebar */
+      .sidebar {
+        background: var(--bg);
+        border-right: 1px solid var(--b1);
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        z-index: 1000;
+        transition: transform 0.3s ease;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          width: var(--sw);
+          transform: translateX(-100%);
+          background: var(--bg);
+          box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
+        }
+      }
+
+      .sb-top {
+        padding: 20px 16px 0;
+        flex: 1;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 8px;
+        margin-bottom: 24px;
+        position: relative;
+      }
+
+      .sb-close {
+        display: none;
+        position: absolute;
+        right: -8px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: var(--t2);
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        transition: all 0.2s;
+      }
+
+      .sb-close:hover {
+        color: #fff;
+        background: var(--s2);
+      }
+
+      @media (max-width: 768px) {
+        .sb-close {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+
+      .logo-mark {
+        width: 28px;
+        height: 28px;
+        background: #fff;
+        border-radius: 6px;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+      }
+
+      .logo-text {
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .nav-lbl {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--t3);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 0 12px;
+        margin-bottom: 4px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 7px 12px;
+        border-radius: var(--r);
+        border: none;
+        background: transparent;
+        color: var(--t2);
+        cursor: pointer;
+        font-size: 13.5px;
+        font-family: inherit;
+        transition: all 0.12s;
+        text-align: left;
+      }
+
+      .nav-item:hover,
+      .nav-item.active {
+        background: var(--s2);
+        color: #fff;
+      }
+
+      .nav-ico {
+        width: 16px;
+        height: 16px;
+        opacity: 0.6;
+        flex-shrink: 0;
+      }
+
+      .nav-item.active .nav-ico {
+        opacity: 1;
+      }
+
+      .nb {
+        margin-left: auto;
+        font-size: 11px;
+        font-weight: 600;
+        background: var(--s3);
+        color: var(--t2);
+        padding: 1px 6px;
+        border-radius: 20px;
+        font-family: "Geist Mono", monospace;
+      }
+
+      .divider {
+        height: 1px;
+        background: var(--b1);
+        margin: 8px 0;
+      }
+
+      .sb-foot {
+        padding: 16px;
+        border-top: 1px solid var(--b1);
+        font-size: 11.5px;
+        color: var(--t3);
+        line-height: 1.8;
+      }
+
+      .sb-foot span {
+        color: var(--t2);
+      }
+
+      /* Main */
+      .main {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .page {
+        display: none;
+        flex: 1;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .page.active {
+        display: flex;
+      }
+
+      /* Page header */
+      .ph {
+        padding: 24px 32px 0;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-shrink: 0;
+        gap: 16px;
+      }
+
+      @media (max-width: 768px) {
+        .ph {
+          padding: 20px 20px 0;
+          flex-direction: column;
+        }
+      }
+
+      .mobile-header {
+        display: none;
+        height: 56px;
+        background: var(--bg);
+        border-bottom: 1px solid var(--b1);
+        padding: 0 16px;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+      }
+
+      @media (max-width: 768px) {
+        .mobile-header {
+          display: flex;
+        }
+      }
+
+      .ib {
+        background: transparent;
+        border: none;
+        color: var(--t2);
+        cursor: pointer;
+        display: flex;
+        padding: 4px;
+      }
+
+      .ph-title {
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .ph-sub {
+        color: var(--t2);
+        font-size: 13px;
+        margin-top: 2px;
+      }
+
+      .ph-right {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      /* Stats bar */
+      .stats {
+        display: flex;
+        padding: 20px 32px;
+        flex-shrink: 0;
+        border-bottom: 1px solid var(--b1);
+        overflow-x: auto;
+      }
+
+      @media (max-width: 768px) {
+        .stats {
+          padding: 16px 20px;
+        }
+      }
+
+      .stat {
+        flex: 1;
+        padding: 0 20px;
+        border-right: 1px solid var(--b1);
+      }
+
+      .stat:first-child {
+        padding-left: 0;
+      }
+
+      .stat:last-child {
+        border-right: none;
+      }
+
+      .sv {
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        font-family: "Geist Mono", monospace;
+      }
+
+      .sl {
+        font-size: 11.5px;
+        color: var(--t2);
+        margin-top: 2px;
+        font-weight: 500;
+      }
+
+      .cw {
+        color: #fff;
+      }
+
+      .cg {
+        color: var(--green);
+      }
+
+      .cp {
+        color: var(--purple);
+      }
+
+      .cy {
+        color: var(--yellow);
+      }
+
+      .cb {
+        color: var(--blue);
+      }
+
+      .cr {
+        color: var(--red);
+      }
+
+      .co {
+        color: var(--orange);
+      }
+
+      /* Toolbar */
+      .toolbar {
+        padding: 14px 32px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+      }
+
+      .sw-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 160px;
+        max-width: 320px;
+      }
+
+      .sw-wrap svg {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--t3);
+        pointer-events: none;
+      }
+
+      .si {
+        width: 100%;
+        background: var(--s1);
+        border: 1px solid var(--b2);
+        border-radius: var(--r);
+        padding: 8px 12px 8px 34px;
+        color: var(--t1);
+        font-size: 13.5px;
+        font-family: inherit;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+
+      .si::placeholder {
+        color: var(--t3);
+      }
+
+      .si:focus {
+        background: var(--s2);
+      }
+
+      .fsel {
+        background: var(--s1);
+        border: 1px solid var(--b2);
+        border-radius: var(--r);
+        padding: 8px 10px;
+        color: var(--t2);
+        font-size: 13px;
+        font-family: inherit;
+        outline: none;
+        cursor: pointer;
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border-radius: var(--r);
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        font-family: inherit;
+        transition: all 0.12s;
+        white-space: nowrap;
+        line-height: 1;
+      }
+
+      .btn-sm {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      .btn-w {
+        background: #fff;
+        color: #000;
+      }
+
+      .btn-w:hover {
+        background: #e8e8e8;
+      }
+
+      .btn-g {
+        background: var(--s1);
+        border: 1px solid var(--b2);
+        color: var(--t2);
+      }
+
+      .btn-g:hover {
+        background: var(--s2);
+        color: var(--t1);
+      }
+
+      .btn-d {
+        background: var(--rd);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: var(--red);
+      }
+
+      .btn-d:hover {
+        background: rgba(239, 68, 68, 0.2);
+      }
+
+      .btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      /* Table */
+      .tw {
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+      }
+
+      thead tr {
+        background: var(--bg);
+      }
+
+      th {
+        padding: 10px 16px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--t3);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        border-bottom: 1px solid var(--b1);
+        white-space: nowrap;
+      }
+
+      td {
+        padding: 12px 16px;
+        font-size: 13.5px;
+        border-bottom: 1px solid var(--b1);
+        vertical-align: middle;
+      }
+
+      tbody tr {
+        transition: background 0.08s;
+      }
+
+      tbody tr:hover td {
+        background: var(--s1);
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .jt {
+        font-weight: 500;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 280px;
+      }
+
+      .jc {
+        font-size: 12px;
+        color: var(--t2);
+        margin-top: 1px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 500;
+        background: var(--s3);
+        color: var(--t2);
+        white-space: nowrap;
+      }
+
+      .dc {
+        color: var(--t3);
+        font-size: 12px;
+        font-family: "Geist Mono", monospace;
+        white-space: nowrap;
+      }
+
+      .ss {
+        border: none;
+        border-radius: 6px;
+        padding: 4px 8px;
+        font-size: 11.5px;
+        font-weight: 600;
+        cursor: pointer;
+        outline: none;
+        font-family: inherit;
+        appearance: none;
+        text-align: center;
+      }
+
+      .sna {
+        background: var(--yd);
+        color: var(--yellow);
+      }
+
+      .sap {
+        background: var(--bd);
+        color: var(--blue);
+      }
+
+      .siv {
+        background: var(--pd);
+        color: var(--purple);
+      }
+
+      .sre {
+        background: var(--rd);
+        color: var(--red);
+      }
+
+      .sof {
+        background: var(--gd);
+        color: var(--green);
+      }
+
+      .ac {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .ib {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        border-radius: 6px;
+        border: none;
+        background: transparent;
+        color: var(--t3);
+        cursor: pointer;
+        transition: all 0.12s;
+        flex-shrink: 0;
+        text-decoration: none;
+      }
+
+      .ib:hover {
+        background: var(--s3);
+        color: var(--t1);
+      }
+
+      .ib.del:hover {
+        background: var(--rd);
+        color: var(--red);
+      }
+
+      /* Empty */
+      .empty {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        color: var(--t3);
+      }
+
+      .empty svg {
+        margin-bottom: 16px;
+        opacity: 0.3;
+      }
+
+      .empty h3 {
+        font-size: 16px;
+        color: var(--t2);
+        margin-bottom: 6px;
+        font-weight: 500;
+      }
+
+      .empty p {
+        font-size: 13px;
+      }
+
+      /* Sites page */
+      .sb {
+        padding: 24px 32px;
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .sh {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
+      .sl-lbl {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--t2);
+      }
+
+      .sl-hint {
+        font-size: 11.5px;
+        color: var(--t3);
+      }
+
+      .site-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .sc {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background: var(--s1);
+        border: 1px solid var(--b1);
+        border-radius: var(--rl);
+        transition: border-color 0.15s;
+      }
+
+      .sc:hover {
+        border-color: var(--b2);
+      }
+
+      .sc.off {
+        opacity: 0.45;
+      }
+
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .dot.on {
+        background: var(--green);
+        box-shadow: 0 0 6px var(--green);
+      }
+
+      .dot.off {
+        background: var(--t3);
+      }
+
+      .si2 {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .sn {
+        font-weight: 500;
+        font-size: 13.5px;
+        color: #fff;
+      }
+
+      .su {
+        font-size: 11.5px;
+        color: var(--t3);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-family: "Geist Mono", monospace;
+        margin-top: 1px;
+      }
+
+      .tsel {
+        background: var(--s2);
+        border: 1px solid var(--b2);
+        border-radius: 6px;
+        padding: 4px 6px;
+        color: var(--t2);
+        font-size: 11px;
+        font-family: "Geist Mono", monospace;
+        cursor: pointer;
+        outline: none;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+
+      .tog {
+        width: 36px;
+        height: 20px;
+        background: var(--s3);
+        border-radius: 10px;
+        cursor: pointer;
+        border: none;
+        position: relative;
+        transition: background 0.2s;
+        flex-shrink: 0;
+      }
+
+      .tog.on {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .tog::after {
+        content: "";
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        background: var(--t3);
+        border-radius: 50%;
+        top: 3px;
+        left: 3px;
+        transition: all 0.2s;
+      }
+
+      .tog.on::after {
+        left: 19px;
+        background: #fff;
+      }
+
+      /* Quick Add */
+      .quick-add {
+        padding: 20px 32px 0;
+        flex-shrink: 0;
+      }
+
+      .qa-wrap {
+        display: flex;
+        gap: 8px;
+        align-items: stretch;
+      }
+
+      .qa-input {
+        flex: 1;
+        background: var(--s1);
+        border: 1px solid var(--b2);
+        border-radius: var(--rl);
+        padding: 12px 16px 12px 40px;
+        color: var(--t1);
+        font-size: 14px;
+        font-family: inherit;
+        outline: none;
+        transition: all 0.2s;
+      }
+
+      .qa-input:focus {
+        border-color: #444;
+        background: var(--s2);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+      }
+
+      .qa-input::placeholder {
+        color: var(--t3);
+      }
+
+      .qa-box {
+        position: relative;
+        flex: 1;
+      }
+
+      .qa-box svg {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--t3);
+        pointer-events: none;
+      }
+
+      .qa-btn {
+        padding: 12px 20px;
+        border-radius: var(--rl);
+        border: none;
+        background: #fff;
+        color: #000;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.15s;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .qa-btn:hover {
+        background: #e8e8e8;
+        transform: translateY(-1px);
+      }
+
+      .qa-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .qa-hint {
+        font-size: 11.5px;
+        color: var(--t3);
+        margin-top: 8px;
+        padding-left: 2px;
+      }
+
+      .qa-hint span {
+        color: var(--green);
+        font-weight: 500;
+      }
+
+      .type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 700;
+        font-family: "Geist Mono", monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .type-badge.rss {
+        background: rgba(251, 146, 60, 0.12);
+        color: #fb923c;
+      }
+
+      .type-badge.crawler {
+        background: var(--bd);
+        color: var(--blue);
+      }
+
+      .type-badge.search {
+        background: rgba(168, 85, 247, 0.12);
+        color: var(--purple);
+      }
+
+      /* Log */
+      .log {
+        background: var(--s1);
+        border: 1px solid var(--b1);
+        border-radius: var(--rl);
+        padding: 16px;
+        margin-top: 20px;
+      }
+
+      .log-t {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--t2);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 12px;
+      }
+
+      .lr {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 0;
+        border-bottom: 1px solid var(--b1);
+        font-size: 12px;
+      }
+
+      .lr:last-child {
+        border-bottom: none;
+      }
+
+      .ls {
+        flex: 1;
+        color: var(--t2);
+      }
+
+      .li {
+        color: var(--t3);
+        font-family: "Geist Mono", monospace;
+        font-size: 11px;
+      }
+
+      .ln {
+        font-weight: 600;
+        font-size: 11px;
+        font-family: "Geist Mono", monospace;
+      }
+
+      .ln.h {
+        color: var(--green);
+      }
+
+      .ln.n {
+        color: var(--t3);
+      }
+
+      /* Scan bar */
+      .scan-bar {
+        display: none;
+        padding: 10px 32px;
+        background: rgba(34, 197, 94, 0.04);
+        border-bottom: 1px solid rgba(34, 197, 94, 0.12);
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        color: var(--green);
+        flex-shrink: 0;
+      }
+
+      .scan-bar.on {
+        display: flex;
+      }
+
+      /* Modal */
+      .mb {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        z-index: 100;
+        place-items: center;
+        backdrop-filter: blur(4px);
+      }
+
+      .mb.open {
+        display: grid;
+      }
+
+      .mo {
+        background: var(--s1);
+        border: 1px solid var(--b2);
+        border-radius: 16px;
+        padding: 28px;
+        width: 520px;
+        max-width: 95vw;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .mo-scroll {
+        overflow-y: auto;
+        flex: 1;
+        margin-top: 12px;
+      }
+
+      .mh {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        flex-shrink: 0;
+      }
+
+      .mt {
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+        letter-spacing: -0.01em;
+      }
+
+      .ff {
+        margin-bottom: 16px;
+      }
+
+      .fl {
+        display: block;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--t2);
+        margin-bottom: 6px;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
+
+      .fi {
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--b2);
+        border-radius: var(--r);
+        padding: 10px 12px;
+        color: var(--t1);
+        font-size: 13.5px;
+        font-family: inherit;
+        outline: none;
+        transition: all 0.15s;
+      }
+
+      .fi:focus {
+        border-color: #404040;
+        background: var(--s2);
+      }
+
+      .fi::placeholder {
+        color: var(--t3);
+      }
+
+      .fh {
+        font-size: 11.5px;
+        color: var(--t3);
+        margin-top: 6px;
+      }
+
+      .type-tabs {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 4px;
+      }
+
+      .ttab {
+        flex: 1;
+        padding: 8px;
+        border-radius: var(--r);
+        border: 1px solid var(--b2);
+        background: transparent;
+        color: var(--t2);
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.12s;
+        text-align: center;
+      }
+
+      .ttab.on {
+        border-color: #fff;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      .mf {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        margin-top: 20px;
+        flex-shrink: 0;
+      }
+
+      /* Toast */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--s1);
+        border: 1px solid var(--b2);
+        border-radius: 10px;
+        padding: 11px 18px;
+        font-size: 13px;
+        z-index: 300;
+        transform: translateY(80px);
+        opacity: 0;
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 360px;
+      }
+
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .td {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .toast.ok .td {
+        background: var(--green);
+      }
+
+      .toast.info .td {
+        background: var(--blue);
+      }
+
+      .toast.err .td {
+        background: var(--red);
+      }
+
+      /* Spin */
+      .spin {
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(0, 0, 0, 0.2);
+        border-top-color: #000;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+        flex-shrink: 0;
+      }
+
+      .spinw {
+        border-color: rgba(255, 255, 255, 0.2);
+        border-top-color: #fff;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--s3);
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sb-top">
+          <div class="logo">
+            <div class="logo-mark">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#000"
+                stroke-width="2.5"
+              >
+                <path
+                  d="M16 16v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h8a2 2 0 012 2v1"
+                />
+                <path d="M20 8l-4 4 4 4" />
+              </svg>
+            </div>
+            <div class="logo-text">JobTrack</div>
+            <button class="sb-close" onclick="toggleSidebar(false)">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div style="margin-bottom: 20px">
+            <button
+              class="nav-item active"
+              id="nav-jobs"
+              onclick="showPage('jobs')"
+            >
+              <svg
+                class="nav-ico"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <rect x="1" y="2" width="14" height="12" rx="2" />
+                <path d="M5 2V1M11 2V1M1 6h14" />
+              </svg>
+              All Jobs
+              <span class="nb" id="nb-total">0</span>
+            </button>
+            <button class="nav-item" id="nav-sites" onclick="showPage('sites')">
+              <svg
+                class="nav-ico"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <circle cx="8" cy="8" r="6.5" />
+                <path
+                  d="M8 1.5C8 1.5 5.5 4.5 5.5 8s2.5 6.5 2.5 6.5M8 1.5C8 1.5 10.5 4.5 10.5 8S8 14.5 8 14.5M1.5 8h13"
+                />
+              </svg>
+              Sources
+              <span class="nb" id="nb-sites">0</span>
+            </button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div style="margin-top: 8px; padding: 0 12px; margin-bottom: 16px">
+            <div class="nav-lbl" style="margin-bottom: 8px">
+              Search Preferences
+            </div>
+            <select
+              id="pref-category"
+              class="tsel"
+              style="
+                width: 100%;
+                padding: 7px 8px;
+                margin-bottom: 6px;
+                font-size: 11.5px;
+              "
+              onchange="onCategoryChange()"
+            ></select>
+            <select
+              id="pref-title"
+              class="tsel"
+              style="
+                width: 100%;
+                padding: 7px 8px;
+                margin-bottom: 10px;
+                font-size: 11.5px;
+              "
+              onchange="saveSettings()"
+            ></select>
+
+            <!-- Global Remote toggle -->
+            <div
+              class="ac"
+              style="justify-content: space-between; margin-bottom: 8px"
+            >
+              <span style="font-size: 12px; color: var(--t2)"
+                >🌐 Global Remote</span
+              >
+              <button
+                id="pref-global"
+                class="tog"
+                onclick="toggleGlobal()"
+              ></button>
+            </div>
+
+            <!-- Azerbaijan toggle -->
+            <div class="ac" style="justify-content: space-between">
+              <span style="font-size: 12px; color: var(--t2)"
+                >🇦🇿 Azerbaijan (BETA)</span
+              >
+              <button id="pref-az" class="tog" onclick="toggleAZ()"></button>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div style="margin-top: 8px">
+            <div class="nav-lbl" style="margin-bottom: 6px">
+              Filter by Status
+            </div>
+            <button class="nav-item" onclick="filterStatus('Not Applied')">
+              <svg
+                class="nav-ico"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <circle cx="8" cy="8" r="6.5" />
+                <path d="M8 5v3l2 2" />
+              </svg>
+              Not Applied
+              <span
+                class="nb"
+                id="nb-na"
+                style="background: var(--yd); color: var(--yellow)"
+                >0</span
+              >
+            </button>
+            <button class="nav-item" onclick="filterStatus('Applied')">
+              <svg
+                class="nav-ico"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path d="M2.5 8.5l3.5 3.5 7.5-8" />
+              </svg>
+              Applied
+              <span
+                class="nb"
+                id="nb-ap"
+                style="background: var(--bd); color: var(--blue)"
+                >0</span
+              >
+            </button>
+            <button class="nav-item" onclick="filterStatus('Interview')">
+              <svg
+                class="nav-ico"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path
+                  d="M8 2L9.5 6.5H14L10.5 9.5L12 14L8 11L4 14L5.5 9.5L2 6.5H6.5Z"
+                />
+              </svg>
+              Interview
+              <span
+                class="nb"
+                id="nb-iv"
+                style="background: var(--pd); color: var(--purple)"
+                >0</span
+              >
+            </button>
+            <button class="nav-item" onclick="filterStatus('Offer')">
+              <svg
+                class="nav-ico"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <circle cx="8" cy="8" r="6.5" />
+                <path d="M5 8l2.5 2.5L11 5.5" />
+              </svg>
+              Offer
+              <span
+                class="nb"
+                id="nb-of"
+                style="background: var(--gd); color: var(--green)"
+                >0</span
+              >
+            </button>
+          </div>
+        </div>
+        <div class="sb-foot">
+          Auto-scan every 24h<br />
+          Last run: <span id="lastRun">Never</span>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main class="main">
+        <div class="mobile-header">
+          <button class="ib" onclick="toggleSidebar(true)">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M3 12h18M3 6h18M3 18h18" />
+            </svg>
+          </button>
+          <div class="logo-text">JobTrack</div>
+        </div>
+
+        <!-- JOBS PAGE -->
+        <div id="page-jobs" class="page active">
+          <div class="ph">
+            <div>
+              <div class="ph-title">Job Listings</div>
+              <div class="ph-sub" id="phSub">
+                Remote &amp; local developer positions
+              </div>
+            </div>
+            <div class="ph-right">
+              <button class="btn btn-g" onclick="clearAll()">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 13 13"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <path
+                    d="M2 3h9M5 3V2h3v1M2.5 3l.6 7.3A1 1 0 004.1 11h4.8a1 1 0 001-.7L10.5 3"
+                  />
+                </svg>
+                Clear All
+              </button>
+              <button class="btn btn-w" id="scanBtn" onclick="scanNow()">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 13 13"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <path d="M11 2v3.5H7.5" />
+                  <path d="M2 11V7.5H5.5" />
+                  <path d="M11 5.5A4.5 4.5 0 106.5 2" />
+                  <path d="M2 7.5a4.5 4.5 0 004.5 3.5" />
+                </svg>
+                Scan Now
+              </button>
+            </div>
+          </div>
+
+          <div class="scan-bar" id="scanBar">
+            <div
+              class="spin spinw"
+              style="border-top-color: var(--green)"
+            ></div>
+            Scanning all sources…
+          </div>
+
+          <div class="stats" id="stats">
+            <div class="stat">
+              <div class="sv cw" id="st-total">0</div>
+              <div class="sl">Total</div>
+            </div>
+            <div class="stat">
+              <div class="sv cy" id="st-na">0</div>
+              <div class="sl">Not Applied</div>
+            </div>
+            <div class="stat">
+              <div class="sv cb" id="st-ap">0</div>
+              <div class="sl">Applied</div>
+            </div>
+            <div class="stat">
+              <div class="sv cp" id="st-iv">0</div>
+              <div class="sl">Interview</div>
+            </div>
+            <div class="stat">
+              <div class="sv cg" id="st-of">0</div>
+              <div class="sl">Offer</div>
+            </div>
+          </div>
+
+          <div
+            class="overlay"
+            id="overlay"
+            onclick="toggleSidebar(false)"
+          ></div>
+
+          <div class="toolbar">
+            <div class="sw-wrap">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 13 13"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <circle cx="5.5" cy="5.5" r="4" />
+                <path d="M9 9l3 3" />
+              </svg>
+              <input
+                class="si"
+                id="q"
+                placeholder="Search jobs…"
+                oninput="render()"
+              />
+            </div>
+            <select class="fsel" id="fs" onchange="render()">
+              <option value="">All statuses</option>
+              <option>Not Applied</option>
+              <option>Applied</option>
+              <option>Interview</option>
+              <option>Rejected</option>
+              <option>Offer</option>
+            </select>
+            <select class="fsel" id="fsrc" onchange="render()">
+              <option value="">All sources</option>
+            </select>
+            <select
+              class="fsel"
+              id="f-category"
+              onchange="onFilterCategoryChange()"
+            >
+              <option value="">All categories</option>
+            </select>
+            <button class="btn btn-g btn-sm" onclick="resetFilters()">
+              Reset
+            </button>
+          </div>
+
+          <div class="tw">
+            <table id="tbl">
+              <thead>
+                <tr>
+                  <th style="width: 38%">Position</th>
+                  <th>Source</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th style="width: 64px"></th>
+                </tr>
+              </thead>
+              <tbody id="tbody"></tbody>
+            </table>
+            <div
+              id="moreMsg"
+              style="
+                display: none;
+                text-align: center;
+                padding: 12px;
+                color: var(--t2);
+                font-size: 13px;
+              "
+            ></div>
+            <div class="empty" id="empty" style="display: none">
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 48 48"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <rect x="4" y="8" width="40" height="34" rx="4" />
+                <path
+                  d="M16 8V6a2 2 0 012-2h12a2 2 0 012 2v2M24 22v8M20 26h8"
+                />
+              </svg>
+              <h3>No jobs found</h3>
+              <p>Click Scan Now to fetch listings</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SITES PAGE -->
+        <div id="page-sites" class="page">
+          <div class="ph">
+            <div>
+              <div class="ph-title">Sources</div>
+              <div class="ph-sub">
+                RSS feeds, crawl targets &amp; search sources
+              </div>
+            </div>
+            <div class="ph-right">
+              <button class="btn btn-g" onclick="resetSites()">
+                Reset defaults
+              </button>
+              <button class="btn btn-g" onclick="openModal()">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 13 13"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <path d="M6.5 1v11M1 6.5h11" />
+                </svg>
+                Advanced
+              </button>
+            </div>
+          </div>
+
+          <div class="quick-add">
+            <div class="qa-wrap">
+              <div class="qa-box">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <circle cx="7" cy="7" r="6" />
+                  <path
+                    d="M7 1.2C7 1.2 5 4 5 7s2 5.8 2 5.8M7 1.2C7 1.2 9 4 9 7s-2 5.8-2 5.8M1.2 7h11.6"
+                  />
+                </svg>
+                <input
+                  class="qa-input"
+                  id="qaUrl"
+                  placeholder="Paste any job site URL — e.g. work.az, indeed.com, linkedin.com/jobs…"
+                />
+              </div>
+              <button class="qa-btn" id="qaBtn" onclick="quickAdd()">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 13 13"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M6.5 1v11M1 6.5h11" />
+                </svg>
+                Add Source
+              </button>
+            </div>
+            <div class="qa-hint">
+              Auto-detects: <span>RSS → HTML Crawler → Search</span>
+            </div>
+          </div>
+
+          <div class="sb">
+            <div class="sh">
+              <div class="sl-lbl" id="sitesCount">0 sources</div>
+              <div class="sl-hint">
+                RSS = feed parser · HTML = page crawler · SEARCH = Google site
+                search
+              </div>
+            </div>
+            <div class="site-list" id="sitesList"></div>
+            <div class="log" id="logPanel" style="display: none">
+              <div class="log-t">Last Scan</div>
+              <div id="logRows"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Add Site Modal -->
+    <div class="mb" id="modal">
+      <div class="mo" style="max-height: unset">
+        <div class="mh">
+          <div class="mt">Add Source</div>
+          <button class="ib" onclick="closeModal()">
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 13 13"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M2 2l9 9M11 2L2 11" />
+            </svg>
+          </button>
+        </div>
+        <div class="ff">
+          <label class="fl">URL</label>
+          <input
+            class="fi"
+            id="mUrl"
+            placeholder="https://example.com or RSS feed URL"
+            oninput="onUrlChange()"
+          />
+          <div class="fh">
+            Paste any URL — RSS auto-detected, otherwise HTML crawled
+          </div>
+        </div>
+        <div class="ff">
+          <label class="fl">Name</label>
+          <input class="fi" id="mName" placeholder="Auto-filled from URL…" />
+        </div>
+        <div class="ff">
+          <label class="fl">Method</label>
+          <div class="type-tabs">
+            <button class="ttab on" id="tab-auto" onclick="selType('auto')">
+              Auto
+            </button>
+            <button class="ttab" id="tab-rss" onclick="selType('rss')">
+              RSS
+            </button>
+            <button class="ttab" id="tab-crawler" onclick="selType('crawler')">
+              HTML Crawler
+            </button>
+            <button class="ttab" id="tab-search" onclick="selType('search')">
+              Google Search
+            </button>
+          </div>
+          <div class="fh" id="typeHint">
+            Auto tries RSS first, falls back to HTML crawler
+          </div>
+        </div>
+        <div class="mf">
+          <button class="btn btn-g" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-w" id="addBtn" onclick="addSite()">
+            Add Source
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+      <div class="td"></div>
+      <span id="toastMsg"></span>
+    </div>
+
+    <script>
+      let jobs = [],
+        sites = [],
+        selType_ = "auto",
+        nameTimer = null;
+      let activeStatusFilter = null;
+      let taxonomy = {};
+      let currentSettings = {
+        job_title: "",
+        category: "Technology",
+        az_active: 0,
+        global_active: 1,
+      };
+      let currentCategory = "Technology";
+      let currentTitle = "";
+
+      // ── Load ──────────────────────────────────────────────
+      async function loadJobs() {
+        const r = await fetch("/api/jobs");
+        jobs = await r.json();
+        updateStats();
+        updateSrcFilter();
+        render();
+      }
+
+      async function loadSites() {
+        const r = await fetch("/api/sites");
+        sites = await r.json();
+        document.getElementById("nb-sites").textContent = sites.length;
+        document.getElementById("sitesCount").textContent =
+          sites.length + " sources";
+        renderSites();
+      }
+
+      function updateStats() {
+        const t = jobs.length;
+        const na = jobs.filter((j) => j.status === "Not Applied").length;
+        const ap = jobs.filter((j) => j.status === "Applied").length;
+        const iv = jobs.filter((j) => j.status === "Interview").length;
+        const of = jobs.filter((j) => j.status === "Offer").length;
+        set("st-total", t);
+        set("st-na", na);
+        set("st-ap", ap);
+        set("st-iv", iv);
+        set("st-of", of);
+        set("nb-total", t);
+        set("nb-na", na);
+        set("nb-ap", ap);
+        set("nb-iv", iv);
+        set("nb-of", of);
+      }
+
+      function updateSrcFilter() {
+        const sel = document.getElementById("fsrc");
+        const cur = sel.value;
+        const srcs = [...new Set(jobs.map((j) => j.source))].sort();
+        sel.innerHTML =
+          '<option value="">All sources</option>' +
+          srcs
+            .map(
+              (s) => `<option${s === cur ? " selected" : ""}>${e(s)}</option>`,
+            )
+            .join("");
+      }
+
+      // ── Render ────────────────────────────────────────────
+      function sclass(s) {
+        return (
+          {
+            "Not Applied": "sna",
+            Applied: "sap",
+            Interview: "siv",
+            Rejected: "sre",
+            Offer: "sof",
+          }[s] || "sna"
+        );
+      }
+
+      function getFiltered() {
+        const q = document.getElementById("q").value.toLowerCase();
+        const fs = activeStatusFilter || document.getElementById("fs").value;
+        const src = document.getElementById("fsrc").value;
+        const fcat = document.getElementById("f-category").value;
+
+        return jobs.filter((j) => {
+          if (
+            q &&
+            !j.title.toLowerCase().includes(q) &&
+            !(j.company || "").toLowerCase().includes(q)
+          )
+            return false;
+          if (fs && j.status !== fs) return false;
+          if (src && j.source !== src) return false;
+
+          if (fcat) {
+            // Category-level filter: check if job title contains any role phrase from that category
+            const rolePhrases = taxonomy[fcat] || [];
+            if (
+              rolePhrases.length &&
+              !rolePhrases.some((role) =>
+                j.title
+                  .toLowerCase()
+                  .includes(role.toLowerCase().split(" ")[0]),
+              )
+            )
+              return false;
+          }
+
+          return true;
+        });
+      }
+
+      function render() {
+        const filtered = getFiltered();
+        const tbody = document.getElementById("tbody");
+        const empty = document.getElementById("empty");
+        const tbl = document.getElementById("tbl");
+
+        if (!filtered.length) {
+          tbl.style.display = "none";
+          empty.style.display = "flex";
+          document.getElementById("moreMsg").style.display = "none";
+          return;
+        }
+        tbl.style.display = "";
+        empty.style.display = "none";
+
+        // OPTIMIZATION: Display maximum 250 jobs to prevent DOM lagging during active scan polling.
+        const MAX_DISPLAY = 250;
+        const toDisplay = filtered.slice(0, MAX_DISPLAY);
+
+        if (filtered.length > MAX_DISPLAY) {
+          document.getElementById("moreMsg").style.display = "block";
+          document.getElementById("moreMsg").textContent =
+            `Showing ${MAX_DISPLAY} out of ${filtered.length} jobs. Use filters to narrow down.`;
+        } else {
+          document.getElementById("moreMsg").style.display = "none";
+        }
+
+        tbody.innerHTML = toDisplay
+          .map((j) => {
+            const hasLink = j.link && j.link.startsWith("http");
+            const linkBtn = hasLink
+              ? `<a href="${e(j.link)}" target="_blank" rel="noopener" class="ib" title="Open">
+               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7.5"/><path d="M7 1h4m0 0v4m0-4L5 7"/></svg>
+             </a>`
+              : "";
+            const sid = e(j.id);
+            const sc = sclass(j.status);
+
+            return `<tr>
+  <td style="max-width:300px">
+    <div class="jt" title="${e(j.title)}">${e(j.title)}</div>
+    ${j.company && j.company !== "N/A" ? `<div class="jc">${e(j.company)}</div>` : ""}
+  </td>
+  <td><span class="pill">${e(j.source)}</span></td>
+  <td class="dc">${e(j.date || "")}</td>
+  <td>
+    <select class="ss ${sc}" onchange="updateStatus('${sid}',this.value,this)">
+      ${["Not Applied", "Applied", "Interview", "Rejected", "Offer"].map((s) => `<option${j.status === s ? " selected" : ""}>${s}</option>`).join("")}
+    </select>
+  </td>
+  <td><div class="ac">${linkBtn}<button class="ib del" onclick="delJob('${sid}')" title="Remove"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h8M4.5 3V2h3v1M2.5 3l.5 6.7A1 1 0 004 11h4a1 1 0 001-.7L9.5 3"/></svg></button></div></td>
+</tr>`;
+          })
+          .join("");
+      }
+
+      function renderSites() {
+        const el = document.getElementById("sitesList");
+        if (!sites.length) {
+          el.innerHTML =
+            '<p style="color:var(--t3);font-size:13px;padding:12px">No sources. Add one above.</p>';
+          return;
+        }
+        el.innerHTML = sites
+          .map((s, i) => {
+            const typeBadge =
+              {
+                rss: "rss",
+                crawler: "crawler",
+                search: "search",
+                auto: "crawler",
+              }[s.type] || "crawler";
+            const typeLabel =
+              { rss: "RSS", crawler: "HTML", search: "SEARCH", auto: "AUTO" }[
+                s.type
+              ] || s.type.toUpperCase();
+            const packTag = s.az_pack
+              ? ' <span style="font-size:10px;color:var(--t3)">🇦🇿</span>'
+              : "";
+            return `<div class="sc ${s.active ? "" : "off"}">
+  <div class="dot ${s.active ? "on" : "off"}"></div>
+  <div class="si2">
+    <div class="sn">${e(s.name)}${packTag}</div>
+    <div class="su">${e(s.url)}</div>
+  </div>
+  <span class="type-badge ${typeBadge}">${typeLabel}</span>
+  <select class="tsel" onchange="setSiteType(${i},this.value)">
+    <option value="auto"${s.type === "auto" ? " selected" : ""}>AUTO</option>
+    <option value="rss"${s.type === "rss" ? " selected" : ""}>RSS</option>
+    <option value="crawler"${s.type === "crawler" ? " selected" : ""}>HTML</option>
+    <option value="search"${s.type === "search" ? " selected" : ""}>SEARCH</option>
+  </select>
+  <button class="tog ${s.active ? "on" : ""}" onclick="toggleSite(${i})"></button>
+  <button class="ib del" onclick="delSite(${i})" title="Remove"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h8M4.5 3V2h3v1M2.5 3l.5 6.7A1 1 0 004 11h4a1 1 0 001-.7L9.5 3"/></svg></button>
+</div>`;
+          })
+          .join("");
+      }
+
+      // ── Actions ───────────────────────────────────────────
+      async function updateStatus(id, status, sel) {
+        sel.className = "ss " + sclass(status);
+        await fetch(`/api/jobs/${encodeURIComponent(id)}/status`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status }),
+        });
+        const j = jobs.find((x) => x.id === id);
+        if (j) j.status = status;
+        updateStats();
+      }
+
+      async function delJob(id) {
+        await fetch(`/api/jobs/${encodeURIComponent(id)}`, {
+          method: "DELETE",
+        });
+        jobs = jobs.filter((j) => j.id !== id);
+        updateStats();
+        updateSrcFilter();
+        render();
+        toast("Job removed", "info");
+      }
+
+      async function clearAll() {
+        if (!confirm("Clear all jobs?")) return;
+        await fetch("/api/jobs/clear", { method: "POST" });
+        jobs = [];
+        updateStats();
+        updateSrcFilter();
+        render();
+        toast("All jobs cleared", "info");
+      }
+
+      let scanInterval = null;
+      let lastNewCount = 0;
+
+      async function scanNow() {
+        const btn = document.getElementById("scanBtn");
+        const bar = document.getElementById("scanBar");
+
+        // If already scanning, the button acts as STOP
+        if (btn.classList.contains("scanning")) {
+          btn.disabled = true;
+          btn.innerHTML = "Stopping...";
+          await fetch("/api/scrape/stop", { method: "POST" });
+          return;
+        }
+
+        // Start scan
+        btn.className = "btn btn-d scanning";
+        btn.innerHTML = "🛑 Stop Scan";
+        bar.classList.add("on");
+        lastNewCount = 0;
+
+        try {
+          await fetch("/api/scrape/start", { method: "POST" });
+
+          scanInterval = setInterval(async () => {
+            try {
+              const r = await fetch("/api/scrape/status");
+              const d = await r.json();
+
+              // Update progress bar
+              if (d.current_site) {
+                bar.innerHTML = `<div class="spin spinw" style="border-top-color:var(--green)"></div> Scanning ${e(d.current_site)}...`;
+              } else {
+                bar.innerHTML =
+                  '<div class="spin spinw" style="border-top-color:var(--green)"></div> Scanning sources...';
+              }
+
+              // If we found new jobs during the scan, inject them instantly into UI!
+              if (d.new_total > lastNewCount) {
+                lastNewCount = d.new_total;
+                await loadJobs(); // progressive reload
+              }
+
+              // When scan finishes
+              if (!d.running) {
+                clearInterval(scanInterval);
+                scanInterval = null;
+                await loadJobs(); // final reload
+                set(
+                  "lastRun",
+                  new Date().toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }),
+                );
+                if (d.log && d.log.length) showLog(d.log);
+                toast(
+                  d.new_total > 0
+                    ? `${d.new_total} new jobs found`
+                    : "No new jobs",
+                  d.new_total > 0 ? "ok" : "info",
+                );
+
+                btn.className = "btn btn-w";
+                btn.innerHTML =
+                  '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2v3.5H7.5"/><path d="M2 11V7.5H5.5"/><path d="M11 5.5A4.5 4.5 0 106.5 2"/><path d="M2 7.5a4.5 4.5 0 004.5 3.5"/></svg> Scan Now';
+                bar.classList.remove("on");
+                btn.disabled = false;
+              }
+            } catch (e) {
+              console.error("Poll error", e);
+            }
+          }, 1500);
+        } catch (_) {
+          toast("Failed to start scan", "err");
+          btn.className = "btn btn-w";
+          btn.innerHTML =
+            '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2v3.5H7.5"/><path d="M2 11V7.5H5.5"/><path d="M11 5.5A4.5 4.5 0 106.5 2"/><path d="M2 7.5a4.5 4.5 0 004.5 3.5"/></svg> Scan Now';
+          bar.classList.remove("on");
+        }
+      }
+
+      function showLog(log) {
+        document.getElementById("logPanel").style.display = "block";
+        document.getElementById("logRows").innerHTML = log
+          .map(
+            (l) =>
+              `<div class="lr">
+           <span style="font-size:12px">${l.new > 0 ? "🟢" : l.status === "disabled" ? "⏸" : "○"}</span>
+           <span class="ls">${e(l.site)}</span>
+           <span class="li">${e(l.status)}</span>
+           <span class="ln ${l.new > 0 ? "h" : "n"}">${l.new > 0 ? "+" + l.new : "0"}</span>
+         </div>`,
+          )
+          .join("");
+      }
+
+      // ── Taxonomy & Settings ────────────────────────────────
+      async function loadTaxonomy() {
+        try {
+          const r = await fetch("/api/taxonomy");
+          taxonomy = await r.json();
+
+          // Sidebar category dropdown
+          const catSel = document.getElementById("pref-category");
+          catSel.innerHTML = Object.keys(taxonomy)
+            .map((c) => `<option value="${e(c)}">${e(c)}</option>`)
+            .join("");
+
+          // Filter-bar category dropdown
+          const fCat = document.getElementById("f-category");
+          fCat.innerHTML =
+            `<option value="">All categories</option>` +
+            Object.keys(taxonomy)
+              .map((c) => `<option value="${e(c)}">${e(c)}</option>`)
+              .join("");
+        } catch (_) {}
+      }
+
+      function rebuildSidebarTitles(category) {
+        // taxonomy is now { category: ["Role Title 1", "Role Title 2", ...] }
+        const titles = Array.isArray(taxonomy[category])
+          ? taxonomy[category]
+          : [];
+        const sel = document.getElementById("pref-title");
+        sel.innerHTML = titles
+          .map((t) => `<option value="${e(t)}">${e(t)}</option>`)
+          .join("");
+        if (currentTitle && titles.includes(currentTitle))
+          sel.value = currentTitle;
+        else if (titles.length) sel.value = titles[0];
+      }
+
+      // Called when the filter-bar category dropdown changes
+      function onFilterCategoryChange() {
+        // no sub-title filter in toolbar, just re-render
+        render();
+      }
+
+      function onCategoryChange() {
+        currentCategory = document.getElementById("pref-category").value;
+        rebuildSidebarTitles(currentCategory);
+        saveSettings();
+      }
+
+      async function loadSettings() {
+        try {
+          const r = await fetch("/api/settings");
+          currentSettings = await r.json();
+          currentCategory = currentSettings.category || "Technology";
+          currentTitle = currentSettings.job_title || "";
+
+          const catSel = document.getElementById("pref-category");
+          if (catSel) catSel.value = currentCategory;
+
+          rebuildSidebarTitles(currentCategory);
+          const titSel = document.getElementById("pref-title");
+          if (titSel && currentTitle) titSel.value = currentTitle;
+
+          // Global toggle — default ON if not explicitly set
+          const globalOn =
+            currentSettings.global_active === 1 ||
+            currentSettings.global_active === undefined;
+          currentSettings.global_active = globalOn ? 1 : 0;
+          document
+            .getElementById("pref-global")
+            .classList.toggle("on", globalOn);
+
+          // AZ toggle
+          const azOn = currentSettings.az_active === 1;
+          document.getElementById("pref-az").classList.toggle("on", azOn);
+
+          // Update subtitle
+          updateSubtitle();
+        } catch (_) {}
+      }
+
+      function updateSubtitle() {
+        const parts = [];
+        if (currentSettings.global_active) parts.push("🌐 Global Remote");
+        if (currentSettings.az_active) parts.push("🇦🇿 Azerbaijan (BETA)");
+        document.getElementById("phSub").textContent = parts.length
+          ? parts.join(" + ") + " developer positions"
+          : "Developer positions";
+      }
+
+      async function saveSettings() {
+        currentCategory = document.getElementById("pref-category").value;
+        currentTitle = document.getElementById("pref-title").value;
+        currentSettings.category = currentCategory;
+        currentSettings.job_title = currentTitle;
+        await fetch("/api/settings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(currentSettings),
+        });
+        toast(`Searching: ${currentTitle} (${currentCategory})`, "ok");
+      }
+
+      async function toggleGlobal() {
+        const tog = document.getElementById("pref-global");
+        tog.classList.toggle("on");
+        currentSettings.global_active = tog.classList.contains("on") ? 1 : 0;
+        const label = currentSettings.global_active
+          ? "Added 🌐 Global Remote sources"
+          : "Removed Global Remote sources";
+        toast(label, "info");
+        await fetch("/api/settings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(currentSettings),
+        });
+        updateSubtitle();
+        loadSites();
+      }
+
+      async function toggleAZ() {
+        const tog = document.getElementById("pref-az");
+        tog.classList.toggle("on");
+        currentSettings.az_active = tog.classList.contains("on") ? 1 : 0;
+        const label = currentSettings.az_active
+          ? "Added 🇦🇿 Azerbaijan (BETA) sources"
+          : "Removed AZ (BETA) sources";
+        toast(label, "info");
+        await fetch("/api/settings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(currentSettings),
+        });
+        updateSubtitle();
+        loadSites();
+      }
+
+      async function toggleSite(i) {
+        await fetch(`/api/sites/${i}/toggle`, { method: "POST" });
+        await loadSites();
+      }
+
+      async function delSite(i) {
+        if (!confirm("Remove this source?")) return;
+        await fetch(`/api/sites/${i}`, { method: "DELETE" });
+        await loadSites();
+        toast("Source removed", "info");
+      }
+
+      async function setSiteType(i, type) {
+        await fetch(`/api/sites/${i}/type`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type }),
+        });
+        await loadSites();
+      }
+
+      async function resetSites() {
+        if (
+          !confirm("Reset to default sources (respects your current toggles)?")
+        )
+          return;
+        await fetch("/api/sites/reset", { method: "POST" });
+        await loadSites();
+        toast("Reset to defaults", "ok");
+      }
+
+      // ── Modal ─────────────────────────────────────────────
+      function openModal() {
+        document.getElementById("modal").classList.add("open");
+        setTimeout(() => document.getElementById("mUrl").focus(), 80);
+      }
+
+      function closeModal() {
+        document.getElementById("modal").classList.remove("open");
+        document.getElementById("mUrl").value = "";
+        document.getElementById("mName").value = "";
+        selType("auto");
+      }
+
+      function selType(t) {
+        selType_ = t;
+        ["auto", "rss", "crawler", "search"].forEach((x) =>
+          document.getElementById("tab-" + x).classList.toggle("on", x === t),
+        );
+        document.getElementById("typeHint").textContent = {
+          auto: "Auto tries RSS first, falls back to HTML crawler",
+          rss: "Treats URL as an RSS/Atom feed directly",
+          crawler: "Scrapes HTML from the page for job links",
+          search: "Uses Google site: search to find jobs on this platform",
+        }[t];
+      }
+
+      function onUrlChange() {
+        clearTimeout(nameTimer);
+        const url = document.getElementById("mUrl").value.trim();
+        if (!url) return;
+        nameTimer = setTimeout(async () => {
+          if (document.getElementById("mName").value) return;
+          try {
+            const r = await fetch("/api/sites/name", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ url }),
+            });
+            const d = await r.json();
+            document.getElementById("mName").value = d.name || "";
+          } catch {}
+        }, 600);
+      }
+
+      async function addSite() {
+        const url = document.getElementById("mUrl").value.trim();
+        const name = document.getElementById("mName").value.trim();
+        if (!url) {
+          toast("Enter a URL", "err");
+          return;
+        }
+
+        const btn = document.getElementById("addBtn");
+        btn.disabled = true;
+        btn.innerHTML = '<div class="spin"></div>';
+
+        try {
+          const r = await fetch("/api/sites", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url, name, type: selType_ }),
+          });
+          const d = await r.json();
+          if (!d.ok) {
+            toast(d.error || "Error adding source", "err");
+            return;
+          }
+          closeModal();
+          await loadSites();
+          showPage("sites");
+          toast(`${d.name} added (${d.type})`, "ok");
+        } catch (ex) {
+          toast("Network error", "err");
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Add Source";
+        }
+      }
+
+      async function quickAdd() {
+        const input = document.getElementById("qaUrl");
+        const btn = document.getElementById("qaBtn");
+        const url = input.value.trim();
+        if (!url) {
+          toast("Paste a website URL", "err");
+          input.focus();
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<div class="spin"></div> Detecting…';
+
+        try {
+          const r = await fetch("/api/sites/quick", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url }),
+          });
+          const d = await r.json();
+          if (!d.ok) {
+            toast(d.error || "Error adding source", "err");
+            return;
+          }
+          input.value = "";
+          await loadSites();
+          toast(`✓ Added ${d.name} (${d.type})`, "ok");
+        } catch (ex) {
+          toast("Network error", "err");
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML =
+            '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.5 1v11M1 6.5h11"/></svg> Add Source';
+        }
+      }
+
+      // ── Navigation ────────────────────────────────────────
+      function showPage(page) {
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById("page-" + page).classList.add("active");
+        document.getElementById("nav-" + page)?.classList.add("active");
+        if (page === "sites") loadSites();
+      }
+
+      function filterStatus(s) {
+        activeStatusFilter = s;
+        document.getElementById("fs").value = s;
+        showPage("jobs");
+        render();
+      }
+
+      function resetFilters() {
+        activeStatusFilter = null;
+        agentOnlyMode = false;
+        document.getElementById("q").value = "";
+        document.getElementById("fs").value = "";
+        document.getElementById("fsrc").value = "";
+        document.getElementById("f-category").value = "";
+        render();
+      }
+
+      // ── Toast ─────────────────────────────────────────────
+      function toast(msg, type = "info") {
+        const t = document.getElementById("toast");
+        document.getElementById("toastMsg").textContent = msg;
+        t.className = `toast ${type} show`;
+        clearTimeout(t._t);
+        t._t = setTimeout(() => t.classList.remove("show"), 3500);
+      }
+
+      // ── Utils ─────────────────────────────────────────────
+      function set(id, val) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      }
+      function e(s) {
+        return String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      // ── Init ─────────────────────────────────────────────
+      async function init() {
+        await loadTaxonomy();
+        await loadSettings();
+        await loadJobs();
+        loadSites();
+        document.getElementById("logPanel").style.display = "none";
+        document.getElementById("qaUrl").addEventListener("keydown", (ev) => {
+          if (ev.key === "Enter") quickAdd();
+        });
+      }
+      // ── Sidebar Toggle ──────────────────────────────────
+      function toggleSidebar(open) {
+        const sb = document.getElementById("sidebar");
+        const ov = document.getElementById("overlay");
+        if (open) {
+          sb.classList.add("open");
+          ov.classList.add("show");
+        } else {
+          sb.classList.remove("open");
+          ov.classList.remove("show");
+        }
+      }
+
+      // Auto-close sidebar on mobile after clicking nav
+      document.querySelectorAll(".nav-item").forEach((item) => {
+        item.addEventListener("click", () => {
+          if (window.innerWidth <= 768) toggleSidebar(false);
+        });
+      });
+
+      init();
+    </script>
+  </body>
+</html>

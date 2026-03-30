@@ -1,0 +1,105 @@
+[
+  {
+    "name": "Boss.az",
+    "url": "https://boss.az",
+    "active": true,
+    "type": "crawler",
+    "az_pack": true,
+    "expert_selectors": {
+      "container": ".results-i",
+      "title": ".results-i-title",
+      "company": ".results-i-company"
+    }
+  },
+  {
+    "name": "Jobsearch.az",
+    "url": "https://jobsearch.az/vacancies",
+    "active": true,
+    "type": "crawler",
+    "az_pack": true,
+    "expert_selectors": {
+      "container": "a.vacancies-item",
+      "title": ".vacancies-item__title"
+    }
+  },
+  {
+    "name": "Work.az",
+    "url": "https://www.work.az",
+    "active": true,
+    "type": "crawler",
+    "az_pack": true
+  },
+  {
+    "name": "Rabota.az",
+    "url": "https://rabota.az",
+    "active": true,
+    "type": "crawler",
+    "az_pack": true
+  },
+  {
+    "name": "eJob.az",
+    "url": "https://ejob.az",
+    "active": true,
+    "type": "crawler",
+    "az_pack": true
+  },
+  {
+    "name": "Jobz.az",
+    "url": "https://jobz.az",
+    "active": true,
+    "type": "crawler",
+    "az_pack": true
+  },
+  {
+    "name": "Navigator.az",
+    "url": "https://navigator.az/en/jobsearch",
+    "active": true,
+    "type": "crawler",
+    "az_pack": true
+  },
+  {
+    "name": "HCB.az",
+    "url": "https://hcb.az",
+    "active": true,
+    "type": "crawler",
+    "az_pack": true
+  },
+  {
+    "name": "AZJob.az",
+    "url": "https://azjob.az",
+    "active": true,
+    "type": "crawler",
+    "az_pack": true
+  },
+  {
+    "name": "NyasaJob.az",
+    "url": "https://nyasajob.com",
+    "active": true,
+    "type": "crawler",
+    "az_pack": true
+  },
+  {
+    "name": "LinkedIn AZ",
+    "url": "https://www.linkedin.com/jobs/search/?location=Azerbaijan",
+    "active": true,
+    "type": "playwright",
+    "az_pack": true,
+    "expert_selectors": {
+      "container": ".jobs-search__results-list li"
+    }
+  },
+  {
+    "name": "Glassdoor AZ",
+    "url": "https://www.glassdoor.com/Job/azerbaijan-jobs-SRCH_IL.0,10_IN17.htm",
+    "active": true,
+    "type": "playwright",
+    "az_pack": true
+  },
+  {
+    "name": "Indeed AZ",
+    "url": "https://az.indeed.com/jobs?l=Azerbaijan",
+    "active": true,
+    "type": "crawler",
+    "az_pack": true
+  }
+]
