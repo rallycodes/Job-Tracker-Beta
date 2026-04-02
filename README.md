@@ -4,7 +4,7 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Playwright](https://img.shields.io/badge/playwright-powered-green.svg)](https://playwright.dev/)
 
-**JobTracker Pro** is a high-performance, privacy-first autonomous job search agent. Designed by **rallycodes**, it leverages the power of Gemini AI to navigate job boards, bypass bot detection, and find the most relevant remote opportunities for you—automatically.
+**JobTracker AI** is a high-performance, privacy-first autonomous job search agent. Designed by **rallycodes**, it leverages the power of Gemini AI to navigate job boards, bypass bot detection, and find the most relevant remote opportunities for you—automatically.
 
 ---
 <img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/0068e0c2-439a-4e9e-bed0-d19030c552ea" />
